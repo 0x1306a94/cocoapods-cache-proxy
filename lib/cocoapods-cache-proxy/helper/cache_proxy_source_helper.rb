@@ -84,20 +84,20 @@ module Pod
                         o_source = obj['source']
 
                         # 只修改 git 的方式
-                        next unless !o_source.blank? && o_source.has_key?("git") && o_source.has_key?("tag")
-
-                        params = []
-                        o_source.each do |key, value| 
-                            params.push("#{key}=#{value}")
+                        if !o_source.blank? && o_source.has_key?("git") && o_source.has_key?("tag")
+                            params = []
+                            o_source.each do |key, value| 
+                                params.push("#{key}=#{value}")
+                            end
+                            new_url = "#{cache_source_url}/#{name}?#{URI::encode(params.join("&"))}"
+                            n_source = { 
+                                "http" => new_url,
+                                "type" => "zip",
+                            }
+                            obj['source'] = n_source
+                            Pod::UI.message "source: #{o_source}" if show_output
+                            Pod::UI.message "new source: #{n_source}" if show_output
                         end
-                        new_url = "#{cache_source_url}/#{name}?#{URI::encode(params.join("&"))}"
-                        n_source = { 
-                            "http" => new_url,
-                            "type" => "zip",
-                        }
-                        obj['source'] = n_source
-                        Pod::UI.message "source: #{o_source}" if show_output
-                        Pod::UI.message "new source: #{n_source}" if show_output
 
                         newPath = "#{cache_specs_root_path}/#{name}/#{version}/#{File.basename(path)}"
 
@@ -164,21 +164,22 @@ module Pod
                         version = obj['version']
                         o_source = obj['source']
                         # 只修改 git 的方式
-                        next unless !o_source.blank? && o_source.has_key?("git") && o_source.has_key?("tag")
+                        if !o_source.blank? && o_source.has_key?("git") && o_source.has_key?("tag")
 
-                        params = []
-                        o_source.each do |key, value| 
-                            params.push("#{key}=#{value}")
+                            params = []
+                            o_source.each do |key, value| 
+                                params.push("#{key}=#{value}")
+                            end
+                            new_url = "#{url}/#{name}?#{URI::encode(params.join("&"))}"
+                            n_source = { 
+                                "http" => new_url,
+                                "type" => "zip",
+                            }
+                            obj['source'] = n_source
+                            Pod::UI.message "source: #{o_source}" if show_output
+                            Pod::UI.message "new source: #{n_source}" if show_output
                         end
-                        new_url = "#{url}/#{name}?#{URI::encode(params.join("&"))}"
-                        n_source = { 
-                            "http" => new_url,
-                            "type" => "zip",
-                        }
-                        obj['source'] = n_source
-                        Pod::UI.message "source: #{o_source}" if show_output
-                        Pod::UI.message "new source: #{n_source}" if show_output
-
+                        
                         newPath = "#{cache_specs_root_path}/#{name}/#{version}/#{File.basename(path)}"
 
                         FileUtils.mkdir_p(File.dirname(newPath)) unless File.directory?(File.dirname(newPath))
