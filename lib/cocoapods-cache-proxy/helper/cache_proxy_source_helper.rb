@@ -83,6 +83,10 @@ module Pod
                         version = obj['version']
                         o_source = obj['source']
 
+                        newPath = path.gsub(official_source_root_path, cache_source_root_path)
+                        # newPath = "#{cache_specs_root_path}/#{name}/#{version}/#{File.basename(path)}"
+
+                        FileUtils.mkdir_p(File.dirname(newPath)) unless File.directory?(File.dirname(newPath)) || Dir.exist?(File.dirname(newPath))
                         # 只修改 git 的方式
                         if !o_source.blank? && o_source.has_key?("git") && o_source.has_key?("tag")
                             params = []
@@ -97,16 +101,14 @@ module Pod
                             obj['source'] = n_source
                             Pod::UI.message "source: #{o_source}" if show_output
                             Pod::UI.message "new source: #{n_source}" if show_output
+
+                            spec_file = File.new(newPath, "wb")
+                            spec_file << JSON.pretty_generate(obj)
+                            spec_file.close
+                        else
+                            FileUtils.cp_r(path, newPath)
                         end
-
-                        newPath = "#{cache_specs_root_path}/#{name}/#{version}/#{File.basename(path)}"
-
                         # count += 1
-
-                        FileUtils.mkdir_p(File.dirname(newPath)) unless File.directory?(File.dirname(newPath))
-                        spec_file = File.new(newPath, "wb")
-                        spec_file << JSON.pretty_generate(obj)
-                        spec_file.close
                        
                     end
 
@@ -153,7 +155,7 @@ module Pod
                     cache_source_root_path = "#{get_cache_proxy_source_root_dir(cache_source_name)}"
                     cache_specs_root_path = "#{cache_source_root_path}/Specs"
 
-                    url = load_conf(cache_source_name)['url']
+                    cache_source_url = load_conf(cache_source_name)['url']
 
                     Find.find(official_specs_root_path) do |path|
                         next unless File.file?(path) && path.end_with?(".podspec.json")
@@ -163,14 +165,17 @@ module Pod
                         name = obj['name']
                         version = obj['version']
                         o_source = obj['source']
+                        newPath = path.gsub(official_source_root_path, cache_source_root_path)
+                        # newPath = "#{cache_specs_root_path}/#{name}/#{version}/#{File.basename(path)}"
+
+                        FileUtils.mkdir_p(File.dirname(newPath)) unless File.directory?(File.dirname(newPath)) || Dir.exist?(File.dirname(newPath))
                         # 只修改 git 的方式
                         if !o_source.blank? && o_source.has_key?("git") && o_source.has_key?("tag")
-
                             params = []
                             o_source.each do |key, value| 
                                 params.push("#{key}=#{value}")
                             end
-                            new_url = "#{url}/#{name}?#{URI::encode(params.join("&"))}"
+                            new_url = "#{cache_source_url}/#{name}?#{URI::encode(params.join("&"))}"
                             n_source = { 
                                 "http" => new_url,
                                 "type" => "zip",
@@ -178,14 +183,13 @@ module Pod
                             obj['source'] = n_source
                             Pod::UI.message "source: #{o_source}" if show_output
                             Pod::UI.message "new source: #{n_source}" if show_output
-                        end
-                        
-                        newPath = "#{cache_specs_root_path}/#{name}/#{version}/#{File.basename(path)}"
 
-                        FileUtils.mkdir_p(File.dirname(newPath)) unless File.directory?(File.dirname(newPath))
-                        spec_file = File.new(newPath, "wb")
-                        spec_file << JSON.pretty_generate(obj)
-                        spec_file.close
+                            spec_file = File.new(newPath, "wb")
+                            spec_file << JSON.pretty_generate(obj)
+                            spec_file.close
+                        else
+                            FileUtils.cp_r(path, newPath)
+                        end
                     end
 
                     system "cd '#{cache_source_root_path}' git add . && git commit -m 'cache update repo'"
