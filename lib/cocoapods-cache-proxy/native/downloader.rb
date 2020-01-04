@@ -13,14 +13,14 @@
 #                 # Pod::Installer::PodSourcePreparer.new(spec, destination).prepare!
 #                 # Sandbox::PodDirCleaner.new(destination, specs_by_platform).clean!
 #                 Pod::UI.message "copy_and_clean: \n"
-#                 Pod::UI.message "spec: #{spec}"
+#                 Pod::UI.message "spec: #{spec.class}"
 #                 Pod::UI.message "source: #{source}"
 #                 Pod::UI.message "destination: #{destination}"
 #                 Pod::UI.message "destination parent: #{destination.parent}"
 #                 Pod::UI.message "destination parent basename: #{destination.basename}"
-#                 # p = "/Users/king/Desktop/Test"
-#                 # FileUtils.rm_rf(p)
-#                 # FileUtils.cp_r(source, p)
+#                 p = "/Users/king/Desktop/#{source.basename}"
+#                 FileUtils.rm_rf(p)
+#                 FileUtils.cp_r(source, p)
 #                 # exit 0
 #                 orig_copy_and_clean(source, destination, spec)
 #                 # exit 0

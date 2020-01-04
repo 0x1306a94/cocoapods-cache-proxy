@@ -32,7 +32,7 @@ module Pod
                     raise Pod::Informative.exception "`#{@name}` 不存在" unless CPSH.check_cache_proxy_source_conf_exists(@name)
 
                     UI.section("update cache proxy repo `#{@name}`") do
-                        # CPSH.remove_cache_proxy_source(@name)
+                        CPSH.update_cache_proxy_source(@name)
                     end
                 end
             end

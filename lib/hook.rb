@@ -3,6 +3,8 @@ require 'cocoapods-downloader'
 require 'cocoapods-cache-proxy/native/native'
 require 'cache_source'
 require 'cocoapods-cache-proxy/helper/helper'
+require 'yaml'
+require 'uri'
 
 Pod::HooksManager.register('cocoapods-cache-proxy', :source_provider) do |context, options|
     Pod::UI.message 'cocoapods-cache-proxy received source_provider hook'
@@ -20,13 +22,24 @@ def create_source_from_name(source_name)
     repos_dir = Pod::Config.instance.repos_dir
     repo = repos_dir + source_name
 
-    Pod::UI.message "#{CPSH.get_cache_proxy_source_conf_path(source_name)}\n"
+    # Pod::UI.message "#{CPSH.get_cache_proxy_source_conf_path(source_name)}\n"
 
-    if File.exist?(CPSH.get_cache_proxy_source_conf_path(source_name))
-        url = File.read(CPSH.get_cache_proxy_source_conf_path(source_name))
-        Pod::CacheSource.new(CPSH.get_cache_proxy_source_spec_root_dir(source_name), url)
-    elsif Dir.exist?("#{repo}")
-        Pod::CacheSource.new(repo, '');
+    # if File.exist?(CPSH.get_cache_proxy_source_conf_path(source_name))
+    #     url = File.read(CPSH.get_cache_proxy_source_conf_path(source_name))
+    #     Pod::CacheSource.new(CPSH.get_cache_proxy_source_root_dir(source_name), url)
+    # elsif Dir.exist?("#{repo}")
+    #     Pod::CacheSource.new(repo, '');
+    # else
+    #  raise Pod::Informative.exception "repo #{source_name} does not exist."
+    # end
+
+    if Dir.exist?("#{repo}")
+        url = ''
+        if File.exist?("#{repo}/#{CPSH.get_cache_proxy_source_conf_file_name()}")
+          hash = YAML.load_file("#{repo}/#{CPSH.get_cache_proxy_source_conf_file_name()}")
+          url = hash['url']
+        end
+        Pod::CacheSource.new(repo, url);
     else
      raise Pod::Informative.exception "repo #{source_name} does not exist."
     end
@@ -44,8 +57,41 @@ module Pod
       alias_method :orig_should_flatten?, :should_flatten?
 
       def download_file(full_filename)
-        Pod::UI.message "full_filename: #{full_filename}"
-        Pod::UI.message "url: #{url}"
+        Pod::UI.message "full_filename: #{full_filename}" if !Pod::Config.instance.silent?
+        
+        uri = URI(url)
+        Pod::UI.message "url: #{uri.path}" if !Pod::Config.instance.silent?
+        if uri.path.start_with?("/cocoapods/proxy") 
+          paths = uri.path.delete_prefix("/").split("/")
+          if paths.count != 5
+            orig_download_file(full_filename)
+            return
+          end
+
+          source_name = paths[3]
+          repos_dir = Pod::Config.instance.repos_dir
+          repo = repos_dir + source_name
+
+          if Dir.exist?("#{repo}")
+              user = ""
+              password = ""
+              if File.exist?("#{repo}/#{CPSH.get_cache_proxy_source_conf_file_name()}")
+                hash = YAML.load_file("#{repo}/#{CPSH.get_cache_proxy_source_conf_file_name()}")
+                user = hash['user']
+                password = hash['password']
+                Pod::UI.message "hash: #{hash}"
+              end
+              curl_options = []
+              curl_options.concat(["-u", "#{user}:#{password}"]) unless user.blank? && password.blank?
+              curl_options.concat(["-f", "-L", "-o", full_filename, url, "--create-dirs"])
+              Pod::UI.message "curl_options: #{curl_options.join(" ")}" if !Pod::Config.instance.silent?
+              curl! curl_options
+          else
+            raise Pod::Informative.exception "repo #{source_name} does not exist."
+          end
+        else
+          orig_download_file(full_filename)
+        end
         # curl_options = ["-f", "-L", "-o", full_filename, url, "--create-dirs", "--netrc-optional"]
 
         # ssl_conf = ["--cert", `git config --global http.sslcert`.gsub("\n", ""), "--key", `git config --global http.sslkey`.gsub("\n", "")]

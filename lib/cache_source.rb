@@ -26,12 +26,21 @@ module Pod
         "#{@source_url}"
       else
         # after super(repo) repo is now the path to the repo
-        File.read(CPSH.get_cache_proxy_source_conf_path(repo)) if CPSH.check_cache_proxy_source_conf_exists(repo)
+        if CPSH.check_cache_proxy_source_conf_exists(repo.basename) 
+          hash = CPSH.load_con(repo.basename)
+          hash['url']
+        else
+          nil
+        end
       end
     end
 
     def git?
       true
+    end
+
+    def cache_proxy_source?
+      CPSH.check_cache_proxy_source_conf_exists(repo.basename)
     end
   end
 end
