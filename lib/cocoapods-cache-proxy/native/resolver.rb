@@ -22,7 +22,8 @@ module Pod
                     UI.message "spec source: #{source}" if show_output
                     UI.message "spec version: #{root_spec.version}" if show_output
                     next unless !source.blank? && source.has_key?(:git) && source.has_key?(:tag)
-                    next unless !target.check_ignore_cache_proxy_pod(root_spec.name)
+                    UI.message "ignore_cache_proxy_pod: #{target.name} #{root_spec.name}" if show_output; next if target.check_ignore_cache_proxy_pod(root_spec.name)
+                        
                     git = source[:git]
                     tag = source[:tag]
                     submodules = source.has_key?(:submodules) ? source[:submodules] : false

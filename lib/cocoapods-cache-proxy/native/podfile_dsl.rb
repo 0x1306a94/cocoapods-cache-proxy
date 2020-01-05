@@ -11,8 +11,9 @@ module Pod
 
             #     current_target_definition.store_pod(name, *requirements)
             # end
-            def ignore_cache_proxy_pods(pods)
-                current_target_definition.set_ignore_cache_proxy_pods(pods) unless !pods.blank? && !current_target_definition.nil?
+            def ignore_cache_proxy_pods!(pods = [])
+                Pod::UI.puts "current_target_definition: #{current_target_definition}" if Pod::Config.instance.verbose?
+                current_target_definition.set_ignore_cache_proxy_pods(pods) if !pods.blank? && !current_target_definition.nil?
             end
         end
     end
@@ -61,7 +62,7 @@ module Pod
 
             def set_ignore_cache_proxy_pods(pods)
                 return if pods.blank?
-                Pod::UI.message "set_ignore_cache_proxy_pods name: #{name}" if Pod::Config.instance.verbose?
+                # Pod::UI.message "set_ignore_cache_proxy_pods name: #{name}" if Pod::Config.instance.verbose?
                 @ignore_cache_proxy = [] if @ignore_cache_proxy.nil?
                 pods.uniq.each do |pod|
                     @ignore_cache_proxy << pod unless @ignore_cache_proxy.include?(pod)
@@ -79,7 +80,12 @@ module Pod
 
             def check_ignore_cache_proxy_pod(pod)
                 return false if pod.blank?
-                get_ignore_cache_proxy_pods().include?(pod)
+                ignores = []
+                ignores.concat(get_ignore_cache_proxy_pods())
+                ignores.concat(root.get_ignore_cache_proxy_pods()) if !root?
+                ignores.concat(parent.get_ignore_cache_proxy_pods()) unless parent.nil?
+                Pod::UI.message "check_ignore_cache_proxy_pod #{name}: #{ignores} #{ignores.uniq.include?(pod)}" if Pod::Config.instance.verbose?
+                return ignores.uniq.include?(pod)
             end
         end
     end
