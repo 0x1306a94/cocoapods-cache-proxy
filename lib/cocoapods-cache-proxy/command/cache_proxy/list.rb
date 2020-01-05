@@ -1,5 +1,6 @@
 require 'cocoapods-cache-proxy/helper/helper'
 require 'cache_source'
+require 'cocoapods-cache-proxy/native/cache_proxy_source'
 
 module Pod
     class Command
@@ -22,23 +23,23 @@ module Pod
                 end
 
                 def run
-                    sources = config.sources_manager.all
+                    sources = CPSH.get_all_cache_proxy_source_conf()
                     print_sources(sources)
                 end
 
                 def print_source(source)
-                    if source.is_a?(Pod::CacheSource) && source.cache_proxy_source?
-                        UI.puts "- URL:  #{source.url}"
-                        UI.puts "- Path: #{source.repo}"
+                    if source.is_a?(Pod::CacheProxySource)
+                        UI.puts "- URL:  #{source.baseURL}"
+                        UI.puts "- Path: #{CPSH.get_cache_proxy_source_root_dir(source.name)}"
                     end
                 end
 
                 def print_sources(sources)
                     sources.each do |source|
-                        if source.is_a?(Pod::CacheSource) && source.cache_proxy_source?
+                        if source.is_a?(Pod::CacheProxySource)
                             UI.title source.name do
-                                UI.puts "- URL:  #{source.url}"
-                                UI.puts "- Path: #{source.repo}"
+                                UI.puts "- URL:  #{source.baseURL}"
+                                UI.puts "- Path: #{CPSH.get_cache_proxy_source_root_dir(source.name)}"
                             end
                         end
                     end

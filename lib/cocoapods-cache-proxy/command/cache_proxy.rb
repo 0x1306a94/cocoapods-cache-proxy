@@ -6,7 +6,7 @@ module Pod
       
       require 'cocoapods-cache-proxy/command/cache_proxy/add'
       require 'cocoapods-cache-proxy/command/cache_proxy/remove'
-      require 'cocoapods-cache-proxy/command/cache_proxy/update'
+      # require 'cocoapods-cache-proxy/command/cache_proxy/update'
       require 'cocoapods-cache-proxy/command/cache_proxy/list'
 
       self.abstract_command = true

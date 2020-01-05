@@ -1,3 +1,6 @@
 require 'cocoapods-cache-proxy/native/downloader'
-# require 'cocoapods-cache-proxy/native/resolver'
+require 'cocoapods-cache-proxy/native/resolver'
+require 'cocoapods-cache-proxy/native/podfile_dsl'
+require 'cocoapods-cache-proxy/native/cache_proxy_source'
+require 'cocoapods-cache-proxy/native/config'
 # require 'cocoapods-cache-proxy/native/installer'
