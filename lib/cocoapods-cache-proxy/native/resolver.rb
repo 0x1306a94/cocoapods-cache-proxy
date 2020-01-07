@@ -10,12 +10,11 @@ module Pod
         def resolver_specs_by_target()
             specs_by_target = orig_resolver_specs_by_target()
             proxy_source = Pod::Config.instance.cache_proxy_source
-            return if proxy_source.nil?
+            return specs_by_target if proxy_source.nil?
 
             show_output = Pod::Config.instance.verbose?
             specs_by_target.each do |target, rspecs|
                 rspecs.each do |spec|
-                    # spec.spec.source = { :http => 'http://127.0.0.1:9898/static/AFNetworking.zip'}
                     root_spec = spec.spec.root
                     source = root_spec.source
                     UI.message "spec name: #{root_spec.name}" if show_output
@@ -34,50 +33,9 @@ module Pod
                     }
                     UI.message "spec new source: #{source}" if show_output
                     root_spec.source = source
-                    
                 end
             end
-            # exit 0
+            specs_by_target
         end
-
-        
-        # old_resolver_specs_by_target = instance_method(:resolver_specs_by_target)
-        # define_method(:resolver_specs_by_target) do
-        #     specs_by_target = old_resolver_specs_by_target.bind(self).call()
-        #     # UI.message "specs_by_target: #{specs_by_target}"
-        #     UI.message "specs_by_target:"
-        #     specs_by_target.each do |target, rspecs|
-        #         # if !rspecs.empty?
-        #         #     UI.message "rspecs: #{rspecs}\n"
-        #         #     res = rspecs.first
-        #         #     UI.message "res: #{res}\n"
-        #         #     root_spec = res.spec.root
-        #         #     UI.message "specs_by_target root_spec name: #{root_spec.name}"
-        #         #     UI.message "specs_by_target root_spec version: #{root_spec.version}"
-        #         #     UI.message "specs_by_target origin source: #{root_spec.source}"
-        #         # end
-        #         # UI.message "spec target: #{target.class}"
-        #         # dependencies = target.get_hash_value('dependencies', [])
-        #         # UI.message "dependencies: #{dependencies}"
-        #         # exit 0
-        #         rspecs.each do |spec|
-        #             # spec.spec.source = { :http => 'http://127.0.0.1:9898/static/AFNetworking.zip'}
-        #             root_spec = spec.spec.root
-        #             UI.message "spec source: #{root_spec.source}"
-        #             UI.message "spec name: #{root_spec.name}"
-        #             UI.message "spec version: #{root_spec.version}"
-        #             if target.check_ignore_cache_proxy_pod(root_spec.name) 
-        #                 UI.message "check_ignore_cache_proxy_pod: #{root_spec.name}"
-        #             end
-        #         end
-        #         # TODO
-        #         # 查找缓存代理, 如果命中 则修改地址为 缓存代理地址 
-        #         # specs_by_target[target] =  rspecs.map do |spec|
-        #         #     spec.spec.source = { :http => 'http://127.0.0.1:9898/static/AFNetworking.zip'}
-        #         #     spec
-        #         # end
-        #     end
-        #     exit 0
-        # end
     end
 end

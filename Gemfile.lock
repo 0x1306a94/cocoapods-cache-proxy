@@ -66,7 +66,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.3.0)
     minitest (5.13.0)
-    mocha (1.11.1)
+    mocha (1.11.2)
     mocha-on-bacon (0.2.3)
       mocha (>= 0.13.0)
     molinillo (0.6.6)
@@ -101,4 +101,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
