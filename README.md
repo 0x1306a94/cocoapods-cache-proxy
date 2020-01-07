@@ -20,16 +20,17 @@ $ pod cache proxy add NAME http://domain/cocoapods/proxy/repos # USER PASSWORD (
 ```ruby
 plugin "cocoapods-cache-proxy", :proxy => "NAME" NAME 是 pod cache proxy add 命令中的 NAME
 
+# 忽略某个依赖,走默认处理
 ignore_cache_proxy_pods! ["SDWebImage"]
 
 target 'CocopodsCacheProxy-Demo' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   
-	pod 'AFNetworking'
-	pod 'SDWebImage'
-  # 此方式会走官方默认处理方式
-  # http源方式会走官方默认处理方式
+  pod 'AFNetworking'
+  pod 'SDWebImage'
+  # 此方式会走默认处理方式
+  # http源方式会走默认处理方式
   pod 'QMUIKit', :git => 'https://github.com/Tencent/QMUI_iOS'
   # Pods for CocopodsCacheProxy-Demo
 
