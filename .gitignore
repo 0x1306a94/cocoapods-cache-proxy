@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/macos,ruby
-# Edit at https://www.gitignore.io/?templates=macos,ruby
+# Created by https://www.gitignore.io/api/macos,ruby,objective-c
+# Edit at https://www.gitignore.io/?templates=macos,ruby,objective-c
 
 ### macOS ###
 # General
@@ -30,6 +30,73 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### Objective-C ###
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## Build generated
+build/
+DerivedData/
+
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods
+# We recommend against adding the Pods directory to your .gitignore. However
+# you should judge for yourself, the pros and cons are mentioned at:
+# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
+# Pods/
+# Add this line if you want to avoid checking in source code from the Xcode workspace
+# *.xcworkspace
+
+# Carthage
+# Add this line if you want to avoid checking in source code from Carthage dependencies.
+# Carthage/Checkouts
+# CocoaPods - Refactored to standalone file
+Pods/
+
+Carthage/Build
+
+# fastlane
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/#source-control
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Code Injection
+# After new code Injection tools there's a generated folder /iOSInjectionProject
+# https://github.com/johnno1962/injectionforxcode
+
+iOSInjectionProject/
+
+### Objective-C Patch ###
+
 ### Ruby ###
 *.gem
 *.rbc
@@ -52,13 +119,11 @@ Temporary Items
 ## Specific to RubyMotion:
 .dat*
 .repl_history
-build/
 *.bridgesupport
 build-iPhoneOS/
 build-iPhoneSimulator/
 
 ## Specific to RubyMotion (use of CocoaPods):
-#
 # We recommend against adding the Pods directory to your .gitignore. However
 # you should judge for yourself, the pros and cons are mentioned at:
 # https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
@@ -88,4 +153,4 @@ build-iPhoneSimulator/
 # Used by RuboCop. Remote config files pulled in from inherit_from directive.
 # .rubocop-https?--*
 
-# End of https://www.gitignore.io/api/macos,ruby
+# End of https://www.gitignore.io/api/macos,ruby,objective-c
