@@ -5,13 +5,16 @@ module Pod
     class Config
         attr_reader :cache_proxy_source
 
+        # @param [String] name
+        # @return [Pod::CacheProxySource]
         def set_cache_proxy_source(name)
             return if name.blank?
             return unless (cnf = CPSH.get_cache_proxy_source_conf(name))
             @cache_proxy_source = cnf
         end
 
-        def cache_proxy_source()
+        # @return [Pod::CacheProxySource]
+        def cache_proxy_source
             @cache_proxy_source
         end
 

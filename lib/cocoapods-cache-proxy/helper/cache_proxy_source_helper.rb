@@ -11,28 +11,38 @@ module Pod
     class CacheProxySource
         class CacheProxySourceHelper
 
-            def self.get_cache_proxy_root_dir()
+            # @return [String]
+            def self.get_cache_proxy_root_dir
                 "#{Pod::Config.instance.home_dir}/cache-proxy"
             end
 
-            def self.get_cache_proxy_source_root_dir(source_name)
+            # @param [String] source_name
+            # @return [String]
+            def self.get_source_root_dir(source_name)
                 "#{Pod::Config.instance.home_dir}/cache-proxy/#{source_name}"
             end
 
-            def self.get_cache_proxy_source_conf_file_name()
+            # @@return [String]
+            def self.get_source_conf_file_name
                 ".cache_proxy_conf.yml"
             end
 
-            def self.get_cache_proxy_source_conf_path(source_name)
-                "#{get_cache_proxy_source_root_dir(source_name)}/#{get_cache_proxy_source_conf_file_name()}"
+            # @param [String] source_name
+            # @return [String]
+            def self.get_source_conf_path(source_name)
+                "#{get_source_root_dir(source_name)}/#{get_source_conf_file_name}"
             end
 
-            def self.check_cache_proxy_source_conf_exists(source_name)
-                File.exist?(get_cache_proxy_source_conf_path(source_name))
+            # @param [String] source_name
+            # @return [Void]
+            def self.check_source_conf_exists(source_name)
+                File.exist?(get_source_conf_path(source_name))
             end
 
+            # @param [String] source_name
+            # @return [Hash]
             def self.load_conf(source_name)
-                path = get_cache_proxy_source_conf_path(source_name)
+                path = get_source_conf_path(source_name)
                 if File.exist?(path)
                     YAML.load_file(path)
                 else
@@ -40,11 +50,16 @@ module Pod
                 end
             end
 
+            # @param [String] source_name
+            # @param [String] url
+            # @param [String] user
+            # @param [String] password
+            # @return [Void]
             def self.create_cache_proxy_source_conf(source_name, url, user, password)
-                path = get_cache_proxy_source_conf_path(source_name)
+                path = get_source_conf_path(source_name)
                 info = {
-                    'name' => source_name,
-                    'url' => url,
+                    name => source_name,
+                    url => url,
                 }
 
                 info['user'] = user unless user.blank?
@@ -57,11 +72,16 @@ module Pod
             end
             
             
+            # @param [String] cache_source_name
+            # @param [String] cache_source_url
+            # @param [String] user
+            # @param [String] password
+            # @return [Void]
             def self.init_cache_proxy_source(cache_source_name, cache_source_url, user, password)
                 begin
                     show_output = Pod::Config.instance.verbose?
 
-                    cache_source_root_path = "#{get_cache_proxy_source_root_dir(cache_source_name)}"
+                    cache_source_root_path = "#{get_source_root_dir(cache_source_name)}"
                     
                     FileUtils.rm_rf(cache_source_root_path) if Dir.exist?(cache_source_root_path)
                     
@@ -80,31 +100,36 @@ module Pod
                 end
             end
 
+            # @param [String] cache_source_name
+            # @return [Void]
             def self.remove_cache_proxy_source(cache_source_name)
                 show_output = Pod::Config.instance.verbose?
 
-                cache_source_root_path = "#{get_cache_proxy_source_root_dir(cache_source_name)}"    
+                cache_source_root_path = "#{get_source_root_dir(cache_source_name)}"
                 FileUtils.rm_rf(cache_source_root_path) if Dir.exist?(cache_source_root_path)
 
                 Pod::UI.message "Successfully remove repo #{cache_source_name}".green if show_output
             end
 
+            # @param [String] cache_source_name
+            # @return [Pod::CacheProxySource]
             def self.get_cache_proxy_source_conf(cache_source_name)
                 return nil unless (hash = load_conf(cache_source_name))
                 Pod::CacheProxySource.new(hash['name'], hash['url'], hash['user'], hash['password'])
             end
 
-            def self.get_all_cache_proxy_source_conf()
-                return [] unless Dir.exist?(get_cache_proxy_root_dir())
-                confs = []
-                Find.find(get_cache_proxy_root_dir()) do |path|
+            # @return [Array<Pod::CacheProxySource>]
+            def self.get_all_sources
+                return [] unless Dir.exist?(get_cache_proxy_root_dir)
+                list = []
+                Find.find(get_cache_proxy_root_dir) do |path|
                     next unless File.file?(path) && path.end_with?(".cache_proxy_conf.yml")
                     pn = Pathname.new(path)
                     source_name = pn.dirname.basename
                     next unless (conf = get_cache_proxy_source_conf(source_name))
-                    confs << conf
+                    list << conf
                 end
-                confs
+                list
             end
         end
     end

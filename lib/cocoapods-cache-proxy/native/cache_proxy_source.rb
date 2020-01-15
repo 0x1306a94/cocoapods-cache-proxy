@@ -1,9 +1,11 @@
 module Pod
     class CacheProxySource
-        # @param [String] proxy_source The name of the repository
-        #
-        # @param [String] url see {#url}
-        #
+
+
+        # @param [String] name
+        # @param [String] baseURL
+        # @param [String] user
+        # @param [String] password
         def initialize(name, baseURL, user, password)
             @name = name
             @baseURL = baseURL
@@ -11,6 +13,8 @@ module Pod
             @password = password
         end
 
+
+        # @return [String]
         def name
             @name
         end
@@ -27,6 +31,11 @@ module Pod
             @password
         end
 
+        # @param [String] pod pod name
+        # @param [String] git repo address
+        # @param [String] tag repo tag
+        # @param [String] submodules need update submodules
+        # @return [String] full download url
         def build_proxy_source(pod, git, tag, submodules = false)
             "#{@baseURL}/#{pod}?git=#{git}&tag=#{tag}&submodules=#{submodules}"
         end

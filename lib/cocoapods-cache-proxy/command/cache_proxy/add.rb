@@ -34,7 +34,7 @@ module Pod
                     end
     
                     def run
-                        raise Pod::Informative.exception "`#{@name}` 已经存在" if CPSH.check_cache_proxy_source_conf_exists(@name)
+                        raise Pod::Informative.exception "`#{@name}` 已经存在" if CPSH.check_source_conf_exists(@name)
                         #raise Pod::Informative.exception "官方源不存在, 请先添加官方源" unless Pod::Config.instance.sources_manager.master_repo_functional?
     
                         UI.section("Add proxy server config `#{@url}` into local spec repo `#{@name}`") do

@@ -7,13 +7,13 @@ module Pod
     class Resolver
 
         alias_method :orig_resolver_specs_by_target, :resolver_specs_by_target
-        def resolver_specs_by_target()
-            specs_by_target = orig_resolver_specs_by_target()
+        def resolver_specs_by_target
+            specs_by_target = orig_resolver_specs_by_target
             proxy_source = Pod::Config.instance.cache_proxy_source
             return specs_by_target if proxy_source.nil?
 
-            specs_by_target.each do |target, rspecs|
-                rspecs.each do |spec|
+            specs_by_target.each do |target, specs|
+                specs.each do |spec|
                     root_spec = spec.spec.root
                     source = root_spec.source
                     next unless !source.blank? && source.has_key?(:git) && source.has_key?(:tag)

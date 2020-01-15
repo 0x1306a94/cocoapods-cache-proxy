@@ -79,6 +79,7 @@ module Pod
             #    end
             #end
 
+            # @param [Array<String>] pods
             def set_ignore_cache_proxy_pods(pods)
                 return if pods.blank?
                 @ignore_cache_proxy = [] if @ignore_cache_proxy.nil?
@@ -87,21 +88,20 @@ module Pod
                 end
             end
 
-            def get_ignore_cache_proxy_pods()
-                if @ignore_cache_proxy.nil?
-                    []
-                else
-                    @ignore_cache_proxy.uniq
-                end
+            # @return [Array<String>]
+            def get_ignore_cache_proxy_pods
+                @ignore_cache_proxy.nil? ? [] : @ignore_cache_proxy.uniq
             end
 
+            # @param [String] pod
+            # @return [TrueClass, FalseClass]
             def check_ignore_cache_proxy_pod(pod)
                 return false if pod.blank?
                 ignores = []
-                ignores.concat(get_ignore_cache_proxy_pods())
-                ignores.concat(root.get_ignore_cache_proxy_pods()) if !root?
-                ignores.concat(parent.get_ignore_cache_proxy_pods()) unless parent.nil?
-                return ignores.uniq.include?(pod)
+                ignores.concat(get_ignore_cache_proxy_pods)
+                ignores.concat(root.get_ignore_cache_proxy_pods) unless root.nil?
+                ignores.concat(parent.get_ignore_cache_proxy_pods) unless parent.nil?
+                ignores.uniq.include?(pod)
             end
         end
     end
