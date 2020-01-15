@@ -14,8 +14,8 @@ module Pod
                     self.arguments = [
                         CLAide::Argument.new('NAME', true),
                         CLAide::Argument.new('URL', true),
-                        CLAide::Argument.new('USER', false),
-                        CLAide::Argument.new('PASSWORD', false)
+                        CLAide::Argument.new('USER', true),
+                        CLAide::Argument.new('PASSWORD', true)
                     ]
     
                     def initialize(argv)
