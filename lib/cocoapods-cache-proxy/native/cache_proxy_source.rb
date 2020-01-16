@@ -1,3 +1,7 @@
+require 'cocoapods-cache-proxy/helper/helper'
+require 'cocoapods-cache-proxy/native/cache_proxy_auth'
+require 'uri'
+
 module Pod
     class CacheProxySource
 
@@ -37,7 +41,22 @@ module Pod
         # @param [String] submodules need update submodules
         # @return [String] full download url
         def build_proxy_source(pod, git, tag, submodules = false)
-            "#{@baseURL}/#{pod}?git=#{git}&tag=#{tag}&submodules=#{submodules}"
+            auth_cnf = CPSH.get_cache_proxy_auth_conf_host(git)
+            if auth_cnf.nil?
+                uri = URI.parse("#{@baseURL}/#{pod}?git=#{git}&tag=#{tag}&submodules=#{submodules}&cache_proxy=1")
+                uri.user = @user
+                uri.password = @password
+                uri.to_s
+            else
+                uri = URI.parse(git)
+                uri.user = "oauth2"
+                uri.password = auth_cnf.token
+                url = uri.to_s
+                uri = URI.parse("#{@baseURL}/#{pod}?git=#{url}&tag=#{tag}&submodules=#{submodules}&cache_proxy=1")
+                uri.user = @user
+                uri.password = @password
+                uri.to_s
+            end
         end
     end
 end

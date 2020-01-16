@@ -21,8 +21,15 @@ module Pod
             end
         end
 
+        class UsedPodProxySource
+            def self.keyword
+                :cache_proxy_source
+            end
+        end
+
         class TargetDefinition
             attr_reader :ignore_cache_proxy
+            attr_reader :cache_proxy_source
 
             #alias_method :orig_store_pod, :store_pod
             #def store_pod(name, *requirements)
@@ -44,10 +51,24 @@ module Pod
             alias_method :orig_parse_inhibit_warnings, :parse_inhibit_warnings
             def parse_inhibit_warnings(name, requirements)
                 options = requirements.last
-                if options.is_a?(Hash) and options.has_key?(Pod::Podfile::IgnorePodProxy.keyword)
-                    options.delete(Pod::Podfile::IgnorePodProxy.keyword)
+
+                if options.is_a?(Hash)
+                    if options.has_key?(Pod::Podfile::IgnorePodProxy.keyword)
+                        ignore = options[Pod::Podfile::IgnorePodProxy.keyword]
+                        options.delete(Pod::Podfile::IgnorePodProxy.keyword)
+                        set_ignore_cache_proxy_pods([name]) if ignore
+                    end
+
+                    if options.has_key?(Pod::Podfile::UsedPodProxySource.keyword)
+                        source_name = options[Pod::Podfile::UsedPodProxySource.keyword]
+                        options.delete(Pod::Podfile::UsedPodProxySource.keyword)
+                        unless source_name.blank?
+                            raise Pod::Informative.exception "cache proxy source: `#{source_name}` source does not exist." unless (source = CPSH.get_cache_proxy_source_conf(source_name))
+                            @cache_proxy_source = Hash.new if @cache_proxy_source.nil?
+                            @cache_proxy_source[name] = source
+                        end
+                    end
                     requirements.pop if options.empty?
-                    set_ignore_cache_proxy_pods([name])
                 end
                 orig_parse_inhibit_warnings(name, requirements)
             end
@@ -102,6 +123,13 @@ module Pod
                 ignores.concat(root.get_ignore_cache_proxy_pods) unless root.nil?
                 ignores.concat(parent.get_ignore_cache_proxy_pods) unless parent.nil?
                 ignores.uniq.include?(pod)
+            end
+
+            # @param [String] pod
+            # @return [CacheProxySource]
+            def proxy_source_for_pod(pod)
+                return nil if @cache_proxy_source.blank?
+                @cache_proxy_source[pod]
             end
         end
     end

@@ -36,15 +36,10 @@ module Pod
       alias_method :orig_download_file, :download_file
 
       def download_file(full_filename)
-
-        proxy_source = Pod::Config.instance.cache_proxy_source
         download_uri = URI(url)
-        proxy_source_uri = URI(proxy_source.baseURL)
-        
-        if download_uri.path.start_with?(proxy_source_uri.path)
-            curl_options = []
-            curl_options.concat(["-u", "#{proxy_source.user}:#{proxy_source.password}"]) unless proxy_source.user.blank? && proxy_source.password.blank?
-            curl_options.concat(["-f", "-L", "-o", full_filename, url, "--create-dirs"])
+
+        if !download_uri.query.blank? && download_uri.query.include?("git=") && download_uri.query.include?("tag=") && download_uri.query.include?("cache_proxy=1")
+            curl_options = ["-f", "-L", "-o", full_filename, url, "--create-dirs"]
             curl! curl_options
         else
           orig_download_file(full_filename)

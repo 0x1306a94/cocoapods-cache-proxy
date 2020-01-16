@@ -3,7 +3,7 @@ require 'cocoapods-cache-proxy/helper/helper'
 module Pod
     class Command
         class Cache < Command
-            class Proxy
+            class Proxy < Cache
                 class Update < Proxy
                     self.summary = '更新缓存代理'
     
@@ -36,7 +36,7 @@ module Pod
                     def run
                         raise Pod::Informative.exception "`#{@name}` 不存在" unless CPSH.check_source_conf_exists(@name)
     
-                        UI.section("update cache proxy repo `#{@name}`") do
+                        UI.section("Update cache proxy repo `#{@name}`".green) do
                             CPSH.init_cache_proxy_source(@name, @url, @user, @password)
                         end
                     end

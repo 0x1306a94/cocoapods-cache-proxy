@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = CocoapodsCacheProxy::VERSION
   spec.authors       = ['0x1306a94']
   spec.email         = ['0x1306a94@gmail.com']
-  spec.description   = %q{A short description of cocoapods-cache-proxy.}
-  spec.summary       = %q{A longer description of cocoapods-cache-proxy.}
+  spec.description   = %q{Pod library source file cache proxy}
+  spec.summary       = %q{Pod library source file cache proxy}
   spec.homepage      = 'https://github.com/0x1306a94/cocoapods-cache-proxy'
   spec.license       = 'MIT'
 
@@ -19,9 +19,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'cocoapods'
-  spec.add_dependency 'cocoapods-core'
+  spec.add_dependency 'cocoapods', '~> 1.5'
 
-  spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'rake', '~> 12.0'
 end
