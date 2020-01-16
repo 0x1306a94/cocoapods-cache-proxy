@@ -11,6 +11,8 @@ target 'CocopodsCacheProxy-Demo' do
 	pod 'RxSwift', :cache_proxy_source => 'Test'
 	pod 'RxCocoa', :cache_proxy_source => 'Test'
 	pod 'SnapKit'
+	pod 'YYText'
+	pod 'YYModel'
   # Pods for CocopodsCacheProxy-Demo
 
 end
