@@ -4,7 +4,7 @@ require 'cocoapods-cache-proxy/native/cache_proxy_source'
 module Pod
     class Command
         class Cache < Command
-            class Proxy
+            class Proxy < Cache
                 class List < Proxy
                     self.summary = '列出缓存代理'
     
@@ -23,14 +23,14 @@ module Pod
                     end
     
                     def run
-                        sources = CPSH.get_all_cache_proxy_source_conf()
+                        sources = CPSH.get_all_sources
                         print_sources(sources)
                     end
     
                     def print_source(source)
                         if source.is_a?(Pod::CacheProxySource)
                             UI.puts "- URL:  #{source.baseURL}"
-                            UI.puts "- Path: #{CPSH.get_cache_proxy_source_root_dir(source.name)}"
+                            UI.puts "- Path: #{CPSH.get_source_root_dir(source.name)}"
                         end
                     end
     
@@ -39,7 +39,7 @@ module Pod
                             if source.is_a?(Pod::CacheProxySource)
                                 UI.title source.name do
                                     UI.puts "- URL:  #{source.baseURL}"
-                                    UI.puts "- Path: #{CPSH.get_cache_proxy_source_root_dir(source.name)}"
+                                    UI.puts "- Path: #{CPSH.get_source_root_dir(source.name)}"
                                 end
                             end
                         end

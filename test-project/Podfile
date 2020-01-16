@@ -1,0 +1,18 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+plugin "cocoapods-cache-proxy", :proxy => "TestProxy"
+
+target 'CocopodsCacheProxy-Demo' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+	pod 'AFNetworking', :ignore_cache_proxy => false
+	pod 'SDWebImage', :cache_proxy_source => 'Test'
+	pod 'RxSwift', :cache_proxy_source => 'Test'
+	pod 'RxCocoa', :cache_proxy_source => 'Test'
+	pod 'SnapKit'
+	pod 'YYText'
+	pod 'YYModel'
+  # Pods for CocopodsCacheProxy-Demo
+
+end

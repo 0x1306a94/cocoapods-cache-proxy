@@ -3,7 +3,7 @@ require 'cocoapods-cache-proxy/helper/helper'
 module Pod
     class Command
         class Cache < Command
-            class Proxy
+            class Proxy < Cache
                 class Remove < Proxy
                     self.summary = '移除缓存代理'
     
@@ -24,15 +24,13 @@ module Pod
     
                     def validate!
                         super
-                        unless @name
-                            help! 'This command requires both a repo name.'
-                        end
+                        help! 'This command requires both a repo name.' unless @name
                     end
     
                     def run
-                        raise Pod::Informative.exception "`#{@name}` 不存在" unless CPSH.check_cache_proxy_source_conf_exists(@name)
+                        raise Pod::Informative.exception "`#{@name}` 不存在" unless CPSH.check_source_conf_exists(@name)
     
-                        UI.section("remove cache proxy repo `#{@name}`") do
+                        UI.section("Remove cache proxy repo `#{@name}`".green) do
                             CPSH.remove_cache_proxy_source(@name)
                         end
                     end

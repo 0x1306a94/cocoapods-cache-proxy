@@ -3,7 +3,7 @@ require 'cocoapods-cache-proxy/helper/helper'
 module Pod
     class Command
         class Cache < Command
-            class Proxy
+            class Proxy < Cache
                 class Add < Proxy
                     self.summary = '添加缓存代理'
     
@@ -14,8 +14,8 @@ module Pod
                     self.arguments = [
                         CLAide::Argument.new('NAME', true),
                         CLAide::Argument.new('URL', true),
-                        CLAide::Argument.new('USER', false),
-                        CLAide::Argument.new('PASSWORD', false)
+                        CLAide::Argument.new('USER', true),
+                        CLAide::Argument.new('PASSWORD', true)
                     ]
     
                     def initialize(argv)
@@ -34,10 +34,10 @@ module Pod
                     end
     
                     def run
-                        raise Pod::Informative.exception "`#{@name}` 已经存在" if CPSH.check_cache_proxy_source_conf_exists(@name)
-                        raise Pod::Informative.exception "官方源不存在, 请先添加官方源" unless Pod::Config.instance.sources_manager.master_repo_functional?
+                        raise Pod::Informative.exception "`#{@name}` 已经存在" if CPSH.check_source_conf_exists(@name)
+                        #raise Pod::Informative.exception "官方源不存在, 请先添加官方源" unless Pod::Config.instance.sources_manager.master_repo_functional?
     
-                        UI.section("Add proxy server config `#{@url}` into local spec repo `#{@name}`") do
+                        UI.section("Add proxy server config `#{@url}` into local spec repo `#{@name}`".green) do
                             CPSH.init_cache_proxy_source(@name, @url, @user, @password)
                         end
                     end
