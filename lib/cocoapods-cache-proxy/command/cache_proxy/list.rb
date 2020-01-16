@@ -4,7 +4,7 @@ require 'cocoapods-cache-proxy/native/cache_proxy_source'
 module Pod
     class Command
         class Cache < Command
-            class Proxy
+            class Proxy < Cache
                 class List < Proxy
                     self.summary = '列出缓存代理'
     

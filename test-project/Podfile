@@ -3,15 +3,16 @@
 
 plugin "cocoapods-cache-proxy", :proxy => "TestProxy"
 
-BRANCH='deveop'
-
 target 'CocopodsCacheProxy-Demo' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
-#	pod 'AFNetworking', :ignore_proxy => true
-	pod 'AFNetworking', :configurations => ['DEBUG'] , :ignore_cache_proxy => true
-#	pod 'SDWebImage', :git => 'xxx', :branch => BRANCH
-#	pod 'YYKit', :git => 'xxx', :branch => BRANCH
+	pod 'AFNetworking', :ignore_cache_proxy => false
+	pod 'SDWebImage', :cache_proxy_source => 'Test'
+	pod 'RxSwift', :cache_proxy_source => 'Test'
+	pod 'RxCocoa', :cache_proxy_source => 'Test'
+	pod 'SnapKit'
+	pod 'YYText'
+	pod 'YYModel'
   # Pods for CocopodsCacheProxy-Demo
 
 end

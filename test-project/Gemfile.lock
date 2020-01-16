@@ -1,9 +1,8 @@
 PATH
   remote: ..
   specs:
-    cocoapods-cache-proxy (0.0.1)
-      cocoapods
-      cocoapods-core
+    cocoapods-cache-proxy (0.0.2)
+      cocoapods (~> 1.5)
 
 GEM
   specs:

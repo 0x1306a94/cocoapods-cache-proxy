@@ -18,6 +18,11 @@ module Pod
             @cache_proxy_source
         end
 
+        # @return [TrueClass, FalseClass]
+        def cache_proxy_source_available
+            !@cache_proxy_source.nil?
+        end
+
         # def remove_cache_proxy_source(name)
         #     return if name.blank? || @cache_proxy_source.nil? || @cache_proxy_source.empty?
         #     @cache_proxy_source.delete_if { |cnf| cnf.name == name }

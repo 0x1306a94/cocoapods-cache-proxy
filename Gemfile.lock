@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cocoapods-cache-proxy (0.0.1)
+    cocoapods-cache-proxy (0.0.2)
       cocoapods
       cocoapods-core
 
